@@ -109,7 +109,7 @@ let blockY = 45;
 
 // 新增返回初始畫面按鈕的功能
 document.getElementById("goToInitialScreen").addEventListener("click", function() {
-    window.location.href = "遊戲初始畫面.html";
+    window.location.href = "index.html";
 });
 
 //道具1按鈕觸發
