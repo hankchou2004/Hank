@@ -1,0 +1,66 @@
+body {
+    text-align: center;
+}
+
+#board {
+    background-color: black;
+    border-top: 5px solid skyblue;
+    border-left: 5px solid skyblue;
+    border-right: 5px solid skyblue;
+    border-bottom: 5px solid skyblue;
+}
+
+#container {
+    position: relative;
+}
+
+
+/* 所有按鈕通用樣式 */
+button {
+    background-color: skyblue;
+    border: none;
+    padding: 20px;
+    font-size: 20px;
+    cursor: pointer;
+    border-radius: 15px; /* 設定圓角長方形 */
+    transition: background-color 0.3s;
+    position: absolute;
+    width: 150px;  /* 設定長方形按鈕的寬度 */
+    height: 60px; /* 設定長方形按鈕的高度 */
+    display: flex; /* 讓按鈕的內容可以居中 */
+    align-items: center; /* 垂直居中 */
+    justify-content: center; /* 水平居中 */
+}
+
+/* 按鈕滑鼠懸停顏色 */
+button:hover {
+    background-color: dodgerblue;
+}
+
+/* 主題選擇按鈕位置 */
+#theme-button {
+    top: 20%; /* 設定距離畫布頂部的距離 */
+    left: 50%;
+    transform: translateX(-50%); /* 水平居中 */
+}
+
+/* 商店按鈕位置 */
+#shop-button {
+    top: 35%; /* 設定距離畫布頂部的距離 */
+    left: 50%;
+    transform: translateX(-50%); /* 水平居中 */
+}
+
+/* 遊戲1按鈕位置 */
+#game1-button {
+    top: 50%; /* 設定距離畫布頂部的距離 */
+    left: 50%;
+    transform: translateX(-50%); /* 水平居中 */
+}
+
+/* 遊戲2按鈕位置 */
+#game2-button {
+    top: 65%; /* 設定距離畫布頂部的距離 */
+    left: 50%;
+    transform: translateX(-50%); /* 水平居中 */
+}

@@ -1,0 +1,56 @@
+body {
+    text-align: center;
+}
+
+#board {
+    position: relative;
+    background-color: black;
+    border-top: 5px solid skyblue;
+    border-left: 5px solid skyblue;
+    border-right: 5px solid skyblue;
+    border-bottom: 5px solid skyblue;
+    }
+
+/* 按鈕滑鼠懸停變色 */
+button:hover {
+    background-color: dodgerblue;
+}
+
+/* 按鈕樣式 */
+button {
+    background-color: skyblue;
+    border: none;
+    padding: 10px 30px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 15px;
+    transition: background-color 0.3s;
+    
+    
+}
+
+#container {
+    position: relative;
+    width: 500px; /* 設置容器寬度 */
+    height: 500px; /* 設置容器高度 */
+    margin: 0 auto; /* 讓容器水平居中 */
+    background-color: #eee; /* 可選：方便檢查容器範圍 */
+}
+
+#tool1-button {
+    padding: 5px 15px;
+    font-size: 8px;
+    position: absolute;
+    top: 44.8%; /* 根據容器高度設置相對位置 */
+    left: 63.5%;
+    opacity:0.6; /* 設置透明度為80% */
+}
+
+#tool2-button {
+    padding: 5px 15px;
+    font-size: 8px;
+    position: absolute;
+    top: 54%; /* 和 tool1-button 有一定距離 */
+    left: 63.5%;
+    opacity:0.6; /* 設置透明度為80% */
+}
