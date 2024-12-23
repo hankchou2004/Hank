@@ -234,7 +234,7 @@ window.onload = function () {
         
         // 更新球的速度
         ball.velocityX = newVelocityX;
-        ball.velocityY = newVelocityY;
+        ball.velocityY =-1* newVelocityY;
         
         // 更新顯示的速度
         document.getElementById("ballSpeedXValue").textContent = newVelocityX;
