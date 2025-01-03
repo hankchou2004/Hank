@@ -1,5 +1,5 @@
-import {  getMoney, setMoney,setTool1,getTool1,setTool2,getTool2} from './共用.js';
-import { getboardColor, setboardColor,getballColor, setballColor,getblockColor, setblockColor,getplayerColor, setplayerColor,getwordColor, setwordColor} from './color.js';
+import {  getMoney, setMoney,setTool1,getTool1,setTool2,getTool2,setTool3,getTool3,getx} from './共用.js';
+
 
 // 更新 sharedData.money 為 sessionStorage 中的值
 let money = getMoney();
@@ -16,7 +16,10 @@ let usebomb=0;
 let bombexplode=0;
 let uselaser=0;
 let laserbreak=0;
-let useCoin=1;
+//多球道具
+let manyball=0;
+let manyballbreak=0;
+let useCoin=3;
 //let coinquantity=0;
 let countcoin=0;
 let score = 0;
@@ -38,7 +41,7 @@ let player = {
 //ball
 let ballWidth = 10;
 let ballHeight = 10;
-let ballVelocityX = Math.random() > 0.5 ? 3 : -3; //15 for testing, 3 normal; //15 for testing, 3 normal
+let ballVelocityX = Math.random() > 0.5 ?3 : -3; //15 for testing, 3 normal; //15 for testing, 3 normal
 let ballVelocityY = -2; //10 for testing, 2 normal
 
 let ball = {
@@ -143,6 +146,16 @@ document.getElementById("tool2-button").addEventListener("click", function() {
         }
 });
 
+document.getElementById("tool3-button").addEventListener("click", function() {
+    if(getTool3()>1){
+        manyball = 1; // 激活生成
+        manyballbreak = 0; // 重置落地标志
+        generateBalls(); // 生成球
+        setTool3(getTool3()-1);
+        }
+});
+
+
 
 window.onload = function() {
     board = document.getElementById("board");
@@ -204,6 +217,7 @@ function renderInitialState() {
     // 绘制球
     context.fillStyle = ballColor;
     context.fillRect(ball.x, ball.y, ball.width, ball.height);
+    
 
     // 绘制所有砖块
     for (let i = 0; i < blockArray.length; i++) {
@@ -229,30 +243,33 @@ function renderInitialState() {
    //coin
    context.font = "20px sans-serif";
    context.fillStyle = wordColor;
-   context.fillText(getMoney()-1,470, 25);
+   context.fillText(getMoney()-1,485+getx(getMoney()-1), 25);
   
    //usecoin
-    context.font = "20px sans-serif";
-    context.fillStyle = wordColor;
-    context.fillText(useCoin,470, 42);
+    //context.font = "20px sans-serif";
+    //context.fillStyle = wordColor;
+    //context.fillText(useCoin,485+getx(useCoin), 42);
 
     //道具1
    //context.font = "15px sans-serif";
    //context.fillStyle = wordColor;
    //context.fillText("爆炸",465, 180);
    context.font = "20px sans-serif";
-   context.fillText(getTool1()-1,470, 200);
+   context.fillText(getTool1()-1,485+getx(getTool1()-1), 180);
    //道具2
    //context.font = "15px sans-serif";
    //context.fillStyle = wordColor;
    //context.fillText("穿透",465, 240);
    context.font = "20px sans-serif";
-   context.fillText(getTool2()-1,470, 260);
+   context.fillText(getTool2()-1,485+getx(getTool2()-1), 240);
+   //道具3
+   context.font = "20px sans-serif";
+   context.fillText(getTool3()-1,485+getx(getTool3()-1), 300);
 
     // 显示提示信息：按空白键开始游戏
     context.font = "20px sans-serif";
     context.fillStyle = wordColor;
-    context.fillText("Press 'Space' to Start the Game", 100, 350);  // 显示提示信息
+    context.fillText("點擊空白鍵開始遊戲", 160, 350);  // 显示提示信息
 }
 
 function update() {
@@ -277,6 +294,7 @@ function update() {
     ball.x += ball.velocityX;
     ball.y += ball.velocityY;
     context.fillRect(ball.x, ball.y, ball.width, ball.height);
+    //context.arc(ball.x, ball.y, ball.width/2, 0, Math.PI * 2);
 
     //bounce the ball off player paddle
     if (topCollision(ball, player) || bottomCollision(ball, player)) {
@@ -295,14 +313,17 @@ function update() {
         ball.velocityX *= -1; //reverse direction
     }
     else if (ball.y + ball.height >= boardHeight) {
-        context.font = "15px sans-serif";
-        context.fillStyle = wordColor;
-        context.fillText("Game Over: Press 'Space' to Restart", 80, 350);
-        if(getMoney()>1&&useCoin==1){
-            context.font = "15px sans-serif";
+        if(useCoin>=1&&getMoney()-1>=10){
+            context.font = "20px sans-serif";
             context.fillStyle = wordColor;
-            context.fillText("You have coin,if you want to revive,Press 'R'", 80, 300);
+            context.fillText("是否花費10金幣復活?點擊Y復活,N取消重新開始", 40, 350);
+            context.fillText("可復活次數:"+useCoin, 190, 400);
         } 
+        else{
+            context.font = "20px sans-serif";
+            context.fillStyle = wordColor;
+            context.fillText("遊戲結束，點擊空白鍵重新開始", 120, 350);
+        }
         gameOver = true;
     }
 
@@ -349,6 +370,13 @@ function update() {
         uselaser=0;
         }
     }
+    //道具3
+    if(manyball==1&&manyballbreak==0){
+        
+        updateBalls();
+        
+    }
+    
 
     //blocks
    // context.fillStyle = blockColor;
@@ -450,25 +478,26 @@ function update() {
    //coin
    context.font = "20px sans-serif";
    context.fillStyle = wordColor;
-   context.fillText(getMoney()-1,470, 25);
+   context.fillText(getMoney()-1,485+getx(getMoney()-1), 25);
   
-   //usecoin
-    context.font = "20px sans-serif";
-    context.fillStyle = wordColor;
-    context.fillText(useCoin,470, 42);
+  
 
     //道具1
    //context.font = "15px sans-serif";
    //context.fillStyle = wordColor;
    //context.fillText("爆炸",465, 180);
    context.font = "20px sans-serif";
-   context.fillText(getTool1()-1,470, 200);
+   context.fillText(getTool1()-1,485+getx(getTool1()-1), 180);
    //道具2
    //context.font = "15px sans-serif";
    //context.fillStyle = wordColor;
    //context.fillText("穿透",465, 240);
    context.font = "20px sans-serif";
-   context.fillText(getTool2()-1,470, 260);
+   context.fillText(getTool2()-1,485+getx(getTool2()-1), 240);
+
+   //道具3
+   context.font = "20px sans-serif";
+   context.fillText(getTool3()-1,485+getx(getTool3()-1), 300);
    
 
 }
@@ -479,16 +508,15 @@ function outOfBounds(xPosition) {
 
 function movePlayer(e) {
     if (gameOver) {
-        if (e.code == "Space"||useCoin==0) {
-            resetGame();
-            console.log("RESET");
-        }
-        
-        else if (e.code=="KeyR" && money>0) {
+        if (e.code == "KeyY"&&useCoin>=1&&getMoney()-1>=10) {
             ContinueGame();
-            console.log("REVIVE");
         }
-        
+        else if (e.code=="KeyN" && useCoin>=1&&getMoney()-1>=10) {
+            resetGame();
+        }
+        else if (e.code=="Space" && (useCoin<1||getMoney()-1<=10)) {
+            resetGame();
+        }
         return;
     }
     
@@ -559,8 +587,8 @@ function createBlocks() {
 }
 function ContinueGame() {
     if (getMoney() > 1) {
-        setMoney(getMoney()-1);
-        useCoin=0;
+        setMoney(getMoney()-10);
+        useCoin-=1;
         gameOver = false;
         player.x = boardWidth / 2 - playerWidth / 2;
         ball.x = Math.random() * (boardWidth - ballWidth),
@@ -598,6 +626,7 @@ function resetGame() {
         velocityX : bombVelocityX,
         velocityY : bombVelocityY
     }
+    usebomb=0;
     bombexplode = 0;
     console.log(bomb.x); // 输出炸弹的随机生成位置
 
@@ -609,13 +638,19 @@ function resetGame() {
     	velocityX : laserVelocityX,
     	velocityY : laserVelocityY
     }
+    uselaser=0;
     laserbreak=0;
     console.log(laser.x); 
+
+    balls = [];
+    manyball=0;
+    manyballbreak=1;
+    
     
     blockArray = [];
     blockRows = 3;
     score = 0;
-    useCoin=1;
+    useCoin=3;
     createBlocks();
    
 }
@@ -649,6 +684,99 @@ function destroySurroundingBlocks(centerBlock) {
                 if(countcoin==5){
                     setMoney(getMoney()+1);
 		            countcoin=0;
+                }
+            }
+        }
+    }
+}
+
+let balls = [];
+
+function createBall() {
+    const newBall = {
+        x : Math.random() * (boardWidth - ballWidth),
+        y : boardHeight-ballHeight-15,
+        width: ballWidth,
+        height: ballHeight,
+        velocityX : ballVelocityX,
+        velocityY : ballVelocityY
+    };
+    balls.push(newBall); // 将新球加入 balls 数组 // 将新球加入到数组中
+}
+
+// 使用道具生成 5 个球
+function generateBalls() {
+    for (let i = 0; i < 20; i++) {
+        createBall(); // 每次调用 createBall 都会向数组中加入一个新的球
+    }
+}
+
+function updateBalls() {
+    balls = balls.filter(ball => {
+    
+    ball.x += ball.velocityX;
+    ball.y += ball.velocityY;
+    context.fillStyle = 'red';
+    context.fillRect(ball.x, ball.y, ball.width, ball.height);
+    //context.arc(ball.x, ball.y, ball.width/2, 0, Math.PI * 2);
+    checkBrickCollision(ball);
+    //bounce the ball off player paddle
+    if (topCollision(ball, player) || bottomCollision(ball, player)) {
+        ball.velocityY *= -1;   // flip y direction up or down
+    }
+    else if (leftCollision(ball, player) || rightCollision(ball, player)) {
+        ball.velocityX *= -1;   // flip x direction left or right
+    }
+
+    if (ball.y <= 0) { 
+        // if ball touches top of canvas
+        ball.velocityY *= -1; //reverse direction
+    }
+    else if (ball.x <= 0 || (ball.x + ball.width >= boardWidth)) {
+        // if ball touches left or right of canvas
+        ball.velocityX *= -1; //reverse direction
+    }
+    return ball.y + ball.height < boardHeight; // 只保留未触底的球 // 返回 false 表示移除该球
+    });
+    if (balls.length === 0) {
+        manyball=0;
+        manyballbreak = 1;
+    }
+}
+
+function checkBrickCollision(ball) {
+    for (let i = 0; i < blockArray.length; i++) {
+        let block = blockArray[i];
+        if (!block.break) { // 检测未破坏的砖块
+            if (topCollision(ball, block) || bottomCollision(ball, block)) {
+                block.hits -= 1; // 减少砖块需要的碰撞次数
+                if (block.hits === 0) {
+                    block.break = true; // 标记砖块为已破坏
+                    score += 100;
+                    blockCount -= 1;
+                    countcoin += 1;
+                }
+                ball.velocityY *= -1; // 翻转 Y 方向
+
+                // 检测金币累积
+                if (countcoin === 5) {
+                    setMoney(getMoney() + 1);
+                    countcoin = 0;
+                }
+            } else if (leftCollision(ball, block) || rightCollision(ball, block)) {
+                block.hits -= 1; // 减少砖块需要的碰撞次数
+                if (block.hits === 0) {
+                    block.break = true; // 标记砖块为已破坏
+                    score += 100;
+                    blockCount -= 1;
+                    countcoin += 1;
+                }
+                ball.velocityX *= -1; // 翻转 X 方向
+
+                // 检测金币累积
+                if (countcoin === 5) {
+                    setMoney(getMoney() + 1);
+                    countcoin = 0;
                 }
             }
         }
