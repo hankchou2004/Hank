@@ -1,6 +1,26 @@
-body {
-    text-align: center;
+/* 使整個頁面的內容居中 */
+body, html {
+    height: 100%;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
+
+/* 父容器，用来包裹 #board 和按钮 */
+#parent-container {
+    position: relative;
+    width: 600px; /* 可以根据需要调整 */
+    height: 600px; /* 可以根据需要调整 */
+}
+
+/* 使board不超出父容器 */
+#board-container {
+    position: relative;
+    width: 500px;
+    height: 500px;
+}
+
 
 #board {
     background-color: black;
@@ -41,14 +61,28 @@ button:hover {
 
 /* 道具位置 */
 #tool1-container {
-    top: 40%;
-    left: 43%;
+    top: 150px;
+    left: 150px;
     transform: translate(-50%, -50%);
 }
 
 /* 道具2的位置 */
 #tool2-container {
-    top: 40%;
-    right: 42%;
+    top: 150px;
+    right: 150px;
+    transform: translate(50%, -50%);
+}
+
+/* 道具3的位置 */
+#tool3-container {
+    bottom: 150px;
+    left: 150px;
+    transform: translate(-50%, -50%);
+}
+
+/* 道具3的位置 */
+#tool4-container {
+    bottom: 150px;
+    right: 150px;
     transform: translate(50%, -50%);
 }
