@@ -7,17 +7,19 @@
         <link rel="stylesheet" href="遊戲初始畫面.css">
         <script type="module" src="共用.js"></script>
     </head>
-    
-        <div>
-            <center>
-                <h1>歡迎來到打磚塊遊戲</h1>
-            </center>
-        </div>
         <body>
-            <canvas id="board" width="500" height="500"></canvas> <!-- 設定畫布的寬度和高度 -->
-            <button id="theme-button" onclick="window.location.href='樣式.html'">主題選擇</button>
-            <button id="game1-button" onclick="window.location.href='game1.html'">遊戲1</button>
-            <button id="game2-button" onclick="window.location.href='game2.html'">遊戲2</button>
-            <button id="shop-button" onclick="window.location.href='商店.html'">商店</button>
+            <div id="parent-container">
+                <center>
+                    <h1>打磚塊遊戲</h1>
+                    <!-- 父元素，包裹着 board 和按钮 -->
+                    <div id="board-container">
+                        <canvas id="board" width="500" height="500"></canvas> <!-- 設定畫布的寬度和高度 -->
+                        <button id="theme-button" onclick="window.location.href='樣式.html'">主題選擇</button>
+                        <button id="game1-button" onclick="window.location.href='game1.html'">遊戲1</button>
+                        <button id="game2-button" onclick="window.location.href='game2.html'">遊戲2</button>
+                        <button id="shop-button" onclick="window.location.href='商店.html'">商店</button>
+                    </div>
+                </center> 
+            </div >       
         </body>
 </html>
