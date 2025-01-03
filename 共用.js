@@ -29,9 +29,10 @@ window.onload = function() {
 
 // 共用.js
 let money = parseInt(sessionStorage.getItem('money')) || 51; // 從 sessionStorage 讀取金額，若無則使用預設值 10
-let tool1 = parseInt(sessionStorage.getItem('tool1')) || 51;
-let tool2 = parseInt(sessionStorage.getItem('tool2')) || 51;
-
+let tool1 = parseInt(sessionStorage.getItem('tool1')) || 6;
+let tool2 = parseInt(sessionStorage.getItem('tool2')) || 6;
+let tool3 = parseInt(sessionStorage.getItem('tool3')) || 6;
+let useCoin =parseInt(sessionStorage.getItem('useCoin')) || 1;
 
 
 function setMoney(newMoney) {
@@ -61,4 +62,27 @@ function getTool2() {
     return tool2;
 }
 
-export {  setMoney, getMoney ,setTool1,getTool1,setTool2,getTool2 };
+function setTool3(newTool3) {
+    tool3 = newTool3;
+    sessionStorage.setItem('tool3', newTool3);
+}
+
+function getTool3() {
+    return tool3;
+}
+
+//數字位置
+function getx(value) {
+    let x = 0;
+    let counter = 10;
+
+    // 根据计数器调整位置
+    while (value / counter >= 1) {
+        counter *= 10; // 计数器乘以 10
+        x -= 11; // 每次增加一位数，向左移动固定距离
+    }
+
+    return x;
+}
+
+export {  setMoney, getMoney ,setTool1,getTool1,setTool2,getTool2,setTool3,getTool3,getx };
