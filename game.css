@@ -1,5 +1,25 @@
-body {
-    text-align: center;
+
+/* 使整個頁面的內容居中 */
+body, html {
+    height: 100%;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* 父容器，用来包裹 #board 和按钮 */
+#parent-container {
+    position: relative;
+    width: 600px; /* 可以根据需要调整 */
+    height: 600px; /* 可以根据需要调整 */
+}
+
+/* 使board不超出父容器 */
+#board-container {
+    position: relative;
+    width: 500px;
+    height: 500px;
 }
 
 #board {
@@ -9,6 +29,9 @@ body {
     border-left: 5px solid skyblue;
     border-right: 5px solid skyblue;
     border-bottom: 5px solid skyblue;
+    width:500px;
+    height:500px;
+    
     }
 
 /* 按鈕滑鼠懸停變色 */
@@ -25,24 +48,19 @@ button {
     cursor: pointer;
     border-radius: 15px;
     transition: background-color 0.3s;
-    
+    white-space: nowrap; /* 防止文字换行 */
+    box-sizing: border-box; /* 确保宽度包括内边距和边框 */
     
 }
 
-#container {
-    position: relative;
-    width: 500px; /* 設置容器寬度 */
-    height: 500px; /* 設置容器高度 */
-    margin: 0 auto; /* 讓容器水平居中 */
-    background-color: #eee; /* 可選：方便檢查容器範圍 */
-}
+
 
 #tool1-button {
     padding: 5px 15px;
     font-size: 8px;
     position: absolute;
-    top: 44.8%; /* 根據容器高度設置相對位置 */
-    left: 63.5%;
+    top: 140px; /* 根據容器高度設置相對位置 */
+    left: 450px;
     opacity:0.6; /* 設置透明度為80% */
 }
 
@@ -50,7 +68,16 @@ button {
     padding: 5px 15px;
     font-size: 8px;
     position: absolute;
-    top: 54%; /* 和 tool1-button 有一定距離 */
-    left: 63.5%;
+    top: 200px; /* 和 tool1-button 有一定距離 */
+    left: 450px;
+    opacity:0.6; /* 設置透明度為80% */
+}
+
+#tool3-button {
+    padding: 5px 15px;
+    font-size: 8px;
+    position: absolute;
+    top: 260px; /* 和 tool1-button 有一定距離 */
+    left: 450px;
     opacity:0.6; /* 設置透明度為80% */
 }
