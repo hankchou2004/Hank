@@ -1,4 +1,4 @@
-import {  getMoney, setMoney,setTool1,getTool1,setTool2,getTool2} from './共用.js';
+import {  getMoney, setMoney,setTool1,getTool1,setTool2,getTool2,setTool3,getTool3,getx} from './共用.js';
 import { getboardColor, setboardColor,getballColor, setballColor,getblockColor, setblockColor,getplayerColor, setplayerColor,getwordColor, setwordColor} from './color.js';
 
 // 更新 sharedData.money 為 sessionStorage 中的值
@@ -16,7 +16,10 @@ let usebomb=0;
 let bombexplode=0;
 let uselaser=0;
 let laserbreak=0;
-let useCoin=1;
+//多球道具
+let manyball=0;
+let manyballbreak=0;
+
 //let coinquantity=0;
 let countcoin=0;
 let score = 0;
@@ -36,6 +39,8 @@ let player = {
     velocityX : playerVelocityX
 }
 
+
+
 //ball
 let ballWidth = 10;
 let ballHeight = 10;
@@ -45,8 +50,8 @@ let ballVelocityY = -2; //10 for testing, 2 normal
 
 
 let ball = {
-    x : Math.random() * (boardWidth - ballWidth),
-    y : boardHeight-ballHeight-playerHeight,
+    x :boardWidth/2 - ballWidth/2,
+    y : boardHeight-ballHeight-10,
     width: ballWidth,
     height: ballHeight,
     size: ballHeight,
@@ -148,11 +153,24 @@ document.getElementById("tool2-button").addEventListener("click", function() {
         }
 });
 
+
+document.getElementById("tool3-button").addEventListener("click", function() {
+    if(getTool3()>1){
+        manyball = 1; // 激活生成
+        manyballbreak = 0; // 重置落地标志
+        generateBalls(); // 生成球
+        setTool3(getTool3()-1);
+        }
+});
+
+
 window.onload = function () {
     board = document.getElementById("board");
     board.height = boardHeight;
     board.width = boardWidth;
     context = board.getContext("2d");
+    context.fillStyle = ballColor;
+    context.fillRect(ball.x, ball.y, ball.width, ball.height);
     const savedBackgroundColor = sessionStorage.getItem('backgroundColor');
     if (savedBackgroundColor) {
         board.style.backgroundColor = savedBackgroundColor;
@@ -182,9 +200,7 @@ window.onload = function () {
         wordColor = savedWordColor;
     }
     
-     //初始畫玩家
-    //context.fillStyle = "skyblue";
-    //context.fillRect(player.x, player.y, player.width, player.height);
+    
 
     // 開始遊戲及控制
     requestAnimationFrame(update);
@@ -192,55 +208,10 @@ window.onload = function () {
 
     // 創建方塊
     createBlocks();
-
-    // 球的大小與速度控制
-    const ballSizeInput = document.getElementById("ballsize");
-    const totalSpeedInput = document.getElementById("totalSpeed");
     
-    
-    
-    ballSizeInput.value = ball.height;
-    totalSpeedInput.value = ball.velocityX + ball.velocityY// 初始總速度為 velocityX + velocityY
-
     
     document.getElementById("ballsizeValue").textContent = ball.size;
-    document.getElementById("totalSpeedValue").textContent = ball.velocityX + ball.velocityY;
-    
-
-    
-    ballSizeInput.addEventListener("input", function () {
-        let newBallSize = parseInt(this.value);
-        ballsize = newBallSize;
-        ball.width = ballsize;
-        ball.height = ballsize;
-        document.getElementById("ballsizeValue").textContent = this.value;
-        ball.y=boardHeight-ball.height-playerHeight;
-        
-    });
-
-    
-    totalSpeedInput.addEventListener("input", function () {
-        const newTotalSpeed = parseInt(this.value); // 取得新的總速度
-        document.getElementById("totalSpeedValue").textContent = newTotalSpeed; // 更新顯示總速度
-        
-        // 設定最大和最小速度
-        const minSpeed = 1;
-        const maxSpeed = 25;  // 設定最大速度，避免球速過快
-        const clampedSpeed = Math.min(Math.max(newTotalSpeed, minSpeed), maxSpeed);
-        
-        // 根據總速度計算 X 和 Y 方向的速度 (保持 3:2 的比例)
-        let newVelocityX = clampedSpeed * 3 / 5;  // 計算 X 軸速度
-        let newVelocityY = clampedSpeed * 2 / 5;  // 計算 Y 軸速度
-        
-        // 更新球的速度
-        ball.velocityX = newVelocityX;
-        ball.velocityY =-1* newVelocityY;
-        
-        // 更新顯示的速度
-        document.getElementById("ballSpeedXValue").textContent = newVelocityX;
-        document.getElementById("ballSpeedYValue").textContent = newVelocityY;
-    });
-    
+    document.getElementById("totalSpeedValue").textContent = Math.abs(ball.velocityX) + Math.abs(ball.velocityY);
     
     
     
@@ -286,41 +257,153 @@ function renderInitialState() {
    //coin
    context.font = "20px sans-serif";
    context.fillStyle = wordColor;
-   context.fillText(getMoney()-1,470, 25);
+   context.fillText(getMoney()-1,485+getx(getMoney()-1), 25);
   
-   //usecoin
-    context.font = "20px sans-serif";
-    context.fillStyle = wordColor;
-    context.fillText(useCoin,470, 42);
+   
 
     //道具1
    //context.font = "15px sans-serif";
    //context.fillStyle = wordColor;
    //context.fillText("爆炸",465, 180);
    context.font = "20px sans-serif";
-   context.fillText(getTool1()-1,470, 175);
+   context.fillText(getTool1()-1,485+getx(getTool1()-1), 175);
    //道具2
    //context.font = "15px sans-serif";
    //context.fillStyle = wordColor;
    //context.fillText("穿透",465, 240);
    context.font = "20px sans-serif";
-   context.fillText(getTool2()-1,470, 235);
-
+   context.fillText(getTool2()-1,485+getx(getTool2()-1), 235);
+    //道具3
+   context.font = "20px sans-serif";
+   context.fillText(getTool3()-1,485+getx(getTool3()-1), 295);
     // 显示提示信息：按空白键开始游戏
     context.font = "20px sans-serif";
     context.fillStyle = wordColor;
-    context.fillText("Press 'Space' to Start the Game", 100, 350);  // 显示提示信息
+    context.fillText("選擇大小與速度後點擊空白鍵開始遊戲", 85, 350);  // 显示提示信息
 }
+
+//遊戲結束畫面
+function gameoverwindow() {
+    // 绘制所有内容，包括砖块、球、玩家、道具和金币
+    context.clearRect(0, 0, board.width, board.height);
+
+    // 绘制玩家
+    context.fillStyle = playerColor;
+    context.fillRect(player.x, player.y, player.width, player.height);
+
+    // 绘制球
+    context.fillStyle = ballColor;
+    context.fillRect(board.width/2-ball.width/2, board.height/2-ball.height/2, ball.width, ball.height);
+
+    // 绘制所有砖块
+    for (let i = 0; i < blockArray.length; i++) {
+        let block = blockArray[i];
+        if (!block.break) {
+            context.fillStyle = blockColor;
+            context.fillRect(block.x, block.y, block.width, block.height);
+        }
+    }
+    //score
+  context.font = "20px sans-serif";
+  context.fillStyle = wordColor;
+  context.fillText(score, 10, 25);
+
+   //coin
+   context.font = "20px sans-serif";
+   context.fillStyle = wordColor;
+   context.fillText(getMoney()-1,485+getx(getMoney()-1), 25);
+  
+   
+    //道具1
+   //context.font = "15px sans-serif";
+   //context.fillStyle = wordColor;
+   //context.fillText("爆炸",465, 180);
+   context.font = "20px sans-serif";
+   context.fillText(getTool1()-1,485+getx(getTool1()-1), 175);
+   //道具2
+   //context.font = "15px sans-serif";
+   //context.fillStyle = wordColor;
+   //context.fillText("穿透",465, 240);
+   context.font = "20px sans-serif";
+   context.fillText(getTool2()-1,485+getx(getTool2()-1), 235);
+    //道具3
+   context.font = "20px sans-serif";
+   context.fillText(getTool3()-1,485+getx(getTool3()-1), 295);
+   context.font = "20px sans-serif";
+   context.fillStyle = wordColor;
+   context.fillText("遊戲結束，選擇大小與速度後點擊空白鍵重新開始", 30, 350);
+   
+}
+
+
+// 球的大小與速度控制
+const ballSizeInput = document.getElementById("ballsize");
+const totalSpeedInput = document.getElementById("totalSpeed");
+
+
+
+ballSizeInput.value = ball.height;
+totalSpeedInput.value = ball.velocityX + ball.velocityY;;// 初始總速度為 velocityX + velocityY
+
+
+document.getElementById("ballsizeValue").textContent = ball.size;
+document.getElementById("totalSpeedValue").textContent = Math.abs(ball.velocityX) + Math.abs(ball.velocityY);
+
+
+
+
+ballSizeInput.addEventListener("input", function () {
+    if (!ballSizeInput.disabled) {
+        let newBallSize = parseInt(this.value);
+        ballsize = newBallSize;
+        ball.width = ballsize;
+        ball.height = ballsize;
+        document.getElementById("ballsizeValue").textContent = this.value;
+        ball.x=boardWidth/2 - ball.width/2;
+        ball.y=boardHeight-ball.height-playerHeight;
+    }
+});
+
+
+totalSpeedInput.addEventListener("input", function () {
+    if (!totalSpeedInput.disabled) {
+        const newTotalSpeed = parseInt(this.value); // 取得新的總速度
+        document.getElementById("totalSpeedValue").textContent = newTotalSpeed; // 更新顯示總速度
+        
+        // 設定最大和最小速度
+        const minSpeed = 5;
+        const maxSpeed = 25;  // 設定最大速度，避免球速過快
+        const clampedSpeed = Math.min(Math.max(newTotalSpeed, minSpeed), maxSpeed);
+        
+        // 根據總速度計算 X 和 Y 方向的速度 (保持 3:2 的比例)
+        let newVelocityX = clampedSpeed * 3 / 5;  // 計算 X 軸速度
+        let newVelocityY = clampedSpeed * (-2) / 5;  // 計算 Y 軸速度
+        
+        // 更新球的速度
+        ball.velocityX = newVelocityX;
+        ball.velocityY = newVelocityY;
+        
+        
+    }
+});
 
 // 更新遊戲畫面
 function update() {
+    
     requestAnimationFrame(update);
+    if (startgame&&!gameOver) { // 游戏进行中
+        ballSizeInput.disabled = true;
+        totalSpeedInput.disabled = true;
+    } else { // 游戏未进行
+        ballSizeInput.disabled = false;
+        totalSpeedInput.disabled = false;
+    }
     if (!startgame) {
         renderInitialState();  // 绘制初始状态的所有元素
         return;  // 不进行后续绘制，等待玩家按下空白键开始游戏
     }
     if (gameOver) {
-       
+        gameoverwindow();
         return;
     }
     context.clearRect(0, 0, board.width, board.height);
@@ -349,14 +432,7 @@ function update() {
         ball.velocityX *= -1;
     }
     else if (ball.y + ball.height > boardHeight) {
-        context.font = "15px sans-serif";
-                context.fillStyle = wordColor;
-                context.fillText("Game Over: Press 'Space' to Restart", 80, 350);
-                if(getMoney()>1&&useCoin==1){
-                    context.font = "15px sans-serif";
-                    context.fillStyle = wordColor;
-                    context.fillText("You have coin,if you want to revive,Press 'R'", 80, 300);
-                } 
+                
                 gameOver = true;
     }
 
@@ -402,6 +478,13 @@ function update() {
         laserbreak=1;
         uselaser=0;
         }
+    }
+
+    //道具3
+    if(manyball==1&&manyballbreak==0){
+        
+        updateBalls();
+        
     }
 
     // 繪製方塊
@@ -477,25 +560,25 @@ function update() {
        //coin
        context.font = "20px sans-serif";
        context.fillStyle = wordColor;
-       context.fillText(getMoney()-1,470, 25);
+       context.fillText(getMoney()-1,485+getx(getMoney()-1), 25);
       
-       //usecoin
-        context.font = "20px sans-serif";
-        context.fillStyle = wordColor;
-        context.fillText(useCoin,470, 42);
+       
     
         //道具1
        //context.font = "15px sans-serif";
        //context.fillStyle = wordColor;
        //context.fillText("爆炸",465, 180);
        context.font = "20px sans-serif";
-       context.fillText(getTool1()-1,470,175);
+       context.fillText(getTool1()-1,485+getx(getTool1()-1),175);
        //道具2
        //context.font = "15px sans-serif";
        //context.fillStyle = wordColor;
        //context.fillText("穿透",465, 240);
        context.font = "20px sans-serif";
-       context.fillText(getTool2()-1,470, 235);
+       context.fillText(getTool2()-1,485+getx(getTool2()-1), 235);
+       //道具3
+       context.font = "20px sans-serif";
+       context.fillText(getTool3()-1,485+getx(getTool3()-1),295);
 }
 
 // 其餘的邏輯（碰撞檢測、玩家移動等）可以保持不變
@@ -507,16 +590,10 @@ function outOfBounds(xPosition) {
 
 function movePlayer(e) {
     if (gameOver) {
-        if (e.code == "Space"||useCoin==0) {
+        if (e.code == "Space") {
             resetGame();
             console.log("RESET");
         }
-        
-        else if (e.code=="KeyR" && money>0) {
-            ContinueGame();
-            console.log("REVIVE");
-        }
-        
         return;
     }
 
@@ -590,8 +667,8 @@ function ContinueGame() {
         useCoin=0;
         gameOver = false;
         player.x = boardWidth / 2 - playerWidth / 2;
-        ball.x = Math.random() * (boardWidth - ballWidth),
-        ball.y = boardHeight-ballHeight-15,
+        ball.x = boardWidth/2 - ballWidth/2,
+        ball.y = boardHeight-ballHeight-10,
         ball.velocityX = ballVelocityX;
         ball.velocityY = ballVelocityY;
         
@@ -608,16 +685,16 @@ function resetGame() {
         velocityX : playerVelocityX
     }
     ball = {
-        x : Math.random() * (boardWidth - ballWidth),
-        y : boardHeight-ball.height-playerHeight,
+        x: boardWidth/2 - ballWidth/2,
+        y : boardHeight-ball.height-10,
         width: ball.width,  
         height: ball.height,
         velocityX : ball.velocityX,
-        velocityY : ball.velocityY
+        velocityY : ball.velocityY*-1
     }
     bomb = {
         x: Math.random() * (boardWidth - bombWidth), // 随机生成 x 坐标
-        y : boardHeight - playerHeight - 5,
+        y : boardHeight - playerHeight - 15,
         width: bombWidth,
         height: bombHeight,
         velocityX : bombVelocityX,
@@ -640,8 +717,12 @@ function resetGame() {
     blockArray = [];
     blockRows = 3;
     score = 0;
-    useCoin=1;
+    
+    balls = [];
+    manyball=0;
+    manyballbreak=1;
     createBlocks();
+    
 }
 
 //波及周圍磚頭
@@ -676,3 +757,95 @@ function destroySurroundingBlocks(centerBlock) {
         }
     }
 
+let balls = [];
+
+function createBall() {
+    const newBall = {
+        x : Math.random() * (boardWidth - ballWidth),
+        y : boardHeight-ballHeight-15,
+        width: ballWidth,
+        height: ballHeight,
+        velocityX : ballVelocityX,
+        velocityY : ballVelocityY
+    };
+    balls.push(newBall); // 将新球加入 balls 数组 // 将新球加入到数组中
+}
+
+// 使用道具生成 5 个球
+function generateBalls() {
+    for (let i = 0; i < 20; i++) {
+        createBall(); // 每次调用 createBall 都会向数组中加入一个新的球
+    }
+}
+
+function updateBalls() {
+    balls = balls.filter(ball => {
+    
+    ball.x += ball.velocityX;
+    ball.y += ball.velocityY;
+    context.fillStyle = 'red';
+    context.fillRect(ball.x, ball.y, ball.width, ball.height);
+    //context.arc(ball.x, ball.y, ball.width/2, 0, Math.PI * 2);
+    checkBrickCollision(ball);
+    //bounce the ball off player paddle
+    if (topCollision(ball, player) || bottomCollision(ball, player)) {
+        ball.velocityY *= -1;   // flip y direction up or down
+    }
+    else if (leftCollision(ball, player) || rightCollision(ball, player)) {
+        ball.velocityX *= -1;   // flip x direction left or right
+    }
+
+    if (ball.y <= 0) { 
+        // if ball touches top of canvas
+        ball.velocityY *= -1; //reverse direction
+    }
+    else if (ball.x <= 0 || (ball.x + ball.width >= boardWidth)) {
+        // if ball touches left or right of canvas
+        ball.velocityX *= -1; //reverse direction
+    }
+    return ball.y + ball.height < boardHeight; // 只保留未触底的球 // 返回 false 表示移除该球
+    });
+    if (balls.length === 0) {
+        manyball=0;
+        manyballbreak = 1;
+    }
+}
+
+function checkBrickCollision(ball) {
+    for (let i = 0; i < blockArray.length; i++) {
+        let block = blockArray[i];
+        if (!block.break) { // 检测未破坏的砖块
+            if (topCollision(ball, block) || bottomCollision(ball, block)) {
+                
+                
+                    block.break = true; // 标记砖块为已破坏
+                    score += 100;
+                    blockCount -= 1;
+                    countcoin += 1;
+                
+                ball.velocityY *= -1; // 翻转 Y 方向
+
+                // 检测金币累积
+                if (countcoin === 5) {
+                    setMoney(getMoney() + 1);
+                    countcoin = 0;
+                }
+            } else if (leftCollision(ball, block) || rightCollision(ball, block)) {
+                block.hits -= 1; // 减少砖块需要的碰撞次数
+                
+                    block.break = true; // 标记砖块为已破坏
+                    score += 100;
+                    blockCount -= 1;
+                    countcoin += 1;
+                
+                ball.velocityX *= -1; // 翻转 X 方向
+
+                // 检测金币累积
+                if (countcoin === 5) {
+                    setMoney(getMoney() + 1);
+                    countcoin = 0;
+                }
+            }
+        }
+    }
+}
